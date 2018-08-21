@@ -11,22 +11,24 @@ const (
 	cliName = "sekret"
 	cliDesc = "Encrypt/Decrypt Kubernetes Secrets"
 	cliVer  = "0.1.0"
+
+	keyFlagName = "key"
 )
 
-func main() {
+func newApp() *cli.App {
 	app := cli.NewApp()
 
 	app.Name = cliName
 	app.Usage = cliDesc
 	app.Version = cliVer
 
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:   "key",
-			Usage:  "Encryption key",
-			EnvVar: "ENCRYPTION_KEY",
-		},
+	keyFlag := cli.StringFlag{
+		Name:   keyFlagName,
+		Usage:  "Encryption key",
+		EnvVar: "ENCRYPTION_KEY",
 	}
+
+	app.Flags = []cli.Flag{keyFlag}
 
 	app.Commands = []cli.Command{
 		{
@@ -34,11 +36,7 @@ func main() {
 			Usage:     "Edit secrets as plain text",
 			ArgsUsage: "file",
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:   "key",
-					Usage:  "Encryption key",
-					EnvVar: "ENCRYPTION_KEY",
-				},
+				keyFlag,
 				cli.BoolTFlag{
 					Name:  "decode-base64",
 					Usage: "Decode base64 data",
@@ -58,33 +56,15 @@ func main() {
 			ShortName: "enc",
 			Usage:     "Encrypt file",
 			ArgsUsage: "file",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:   "key",
-					Usage:  "Encryption key",
-					EnvVar: "ENCRYPTION_KEY",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				fmt.Println(c.Args())
-				fmt.Println(c.String("key"))
-				fmt.Println(c.GlobalString("key"))
-				fmt.Println("encrypt")
-				return nil
-			},
+			Flags:     []cli.Flag{keyFlag},
+			Action:    encryptCommand,
 		},
 		{
 			Name:      "decrypt",
 			ShortName: "dec",
 			Usage:     "Decrypt encrypted file",
 			ArgsUsage: "file",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:   "key",
-					Usage:  "Encryption key",
-					EnvVar: "ENCRYPTION_KEY",
-				},
-			},
+			Flags:     []cli.Flag{keyFlag},
 			Action: func(c *cli.Context) error {
 				fmt.Println(c.Args())
 				fmt.Println(c.String("key"))
@@ -95,8 +75,14 @@ func main() {
 		},
 	}
 
+	return app
+}
+
+func main() {
+	app := newApp()
 	err := app.Run(os.Args)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

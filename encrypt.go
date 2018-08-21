@@ -42,11 +42,6 @@ func encrypt(key []byte, in io.Reader, out io.Writer) error {
 		return err
 	}
 
-	nonce := make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return err
-	}
-
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return err
@@ -57,7 +52,13 @@ func encrypt(key []byte, in io.Reader, out io.Writer) error {
 		return err
 	}
 
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return err
+	}
+
 	ciphertext := gcm.Seal(nil, nonce, plaintext, nil)
+	ciphertext = append(nonce, ciphertext...)
 	_, err = out.Write(ciphertext)
 	if err != nil {
 		return err

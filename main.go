@@ -65,13 +65,7 @@ func newApp() *cli.App {
 			Usage:     "Decrypt encrypted file",
 			ArgsUsage: "file",
 			Flags:     []cli.Flag{keyFlag},
-			Action: func(c *cli.Context) error {
-				fmt.Println(c.Args())
-				fmt.Println(c.String("key"))
-				fmt.Println(c.GlobalString("key"))
-				fmt.Println("decrypt")
-				return nil
-			},
+			Action:    decryptCommand,
 		},
 	}
 

@@ -17,6 +17,9 @@ func keyFromContext(c *cli.Context) ([]byte, error) {
 		return nil, fmt.Errorf("key is required")
 	}
 
+	if len(key) != 16 && len(key) != 32 {
+		return nil, fmt.Errorf("key must be 16 bytes or 32 bytes")
+	}
 	return key, nil
 }
 

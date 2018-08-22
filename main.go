@@ -12,7 +12,8 @@ const (
 	cliDesc = "Encrypt/Decrypt Kubernetes Secrets"
 	cliVer  = "0.1.0"
 
-	keyFlagName = "key"
+	editorFlagName = "editor"
+	keyFlagName    = "key"
 )
 
 func newApp() *cli.App {
@@ -40,6 +41,11 @@ func newApp() *cli.App {
 				cli.BoolTFlag{
 					Name:  "decode-base64",
 					Usage: "Decode base64 data",
+				},
+				cli.StringFlag{
+					Name:   editorFlagName,
+					Usage:  "Editor",
+					EnvVar: "EDITOR",
 				},
 			},
 			Action: editCommand,

@@ -17,6 +17,11 @@ func editCommand(c *cli.Context) error {
 		return err
 	}
 
+	editor := c.String(editorFlagName)
+	if editor == "" {
+		return fmt.Errorf("editor is required")
+	}
+
 	if c.NArg() != 1 {
 		return fmt.Errorf("file is required")
 	}
@@ -47,7 +52,7 @@ func editCommand(c *cli.Context) error {
 		return err
 	}
 
-	cmd := exec.Command("vim", tmpfile.Name())
+	cmd := exec.Command(editor, tmpfile.Name())
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 

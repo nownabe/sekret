@@ -42,14 +42,7 @@ func newApp() *cli.App {
 					Usage: "Decode base64 data",
 				},
 			},
-			Action: func(c *cli.Context) error {
-				fmt.Println(c.BoolT("decode-base64"))
-				fmt.Println(c.String("key"))
-				fmt.Println(c.Args())
-				fmt.Println(c.GlobalString("key"))
-				fmt.Println("edit")
-				return nil
-			},
+			Action: editCommand,
 		},
 		{
 			Name:      "encrypt",

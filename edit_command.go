@@ -40,30 +40,22 @@ func (c *editCommand) run() error {
 		return err
 	}
 
-	tmpfile, err := ioutil.TempFile("", path.Base(c.filename))
-	if err != nil {
-		return err
-	}
-	defer removeTempFile(tmpfile.Name())
-
-	if _, err := tmpfile.Write(plainText); err != nil {
-		return err
-	}
-
-	cmd := exec.Command(c.editor, tmpfile.Name())
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-
-	updatedPlainText, err := ioutil.ReadFile(tmpfile.Name())
+	updatedPlainText, err := c.editText(plainText)
 	if err != nil {
 		return err
 	}
 
-	updatedCipherText, err := c.crypto.encrypt(updatedPlainText)
+	return c.update(updatedPlainText)
+}
+
+func (c *editCommand) update(plainText []byte) error {
+	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
+	if err != nil {
+		return err
+	}
+	defer removeTempFile(tmpFile.Name())
+
+	cipherText, err := c.crypto.encrypt(plainText)
 	if err != nil {
 		return err
 	}
@@ -73,18 +65,37 @@ func (c *editCommand) run() error {
 		return err
 	}
 
-	tmpEncFile := c.filename + ".tmp"
-	if err := ioutil.WriteFile(tmpEncFile, updatedCipherText, fi.Mode()); err != nil {
+	if err := ioutil.WriteFile(tmpFile.Name(), cipherText, fi.Mode()); err != nil {
 		return err
 	}
-	defer removeTempFile(tmpEncFile)
 
-	if err := os.Rename(tmpEncFile, c.filename); err != nil {
+	if err := os.Rename(tmpFile.Name(), c.filename); err != nil {
 		return err
 	}
 
 	return nil
+}
 
+func (c *editCommand) editText(text []byte) ([]byte, error) {
+	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
+	if err != nil {
+		return nil, err
+	}
+	defer removeTempFile(tmpFile.Name())
+
+	if _, err := tmpFile.Write(text); err != nil {
+		return nil, err
+	}
+
+	cmd := exec.Command(c.editor, tmpFile.Name())
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+
+	if err := cmd.Run(); err != nil {
+		return nil, err
+	}
+
+	return ioutil.ReadFile(tmpFile.Name())
 }
 
 func removeTempFile(path string) {

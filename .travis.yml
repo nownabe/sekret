@@ -1,0 +1,26 @@
+language: go
+
+go:
+  - '1.10'
+
+script:
+  - |
+    if [[ -z "$TRAVIS_TAG" ]]; then
+      go test -race -cover -vet -all ./...
+    fi
+
+  - |
+    set -x
+    if [[ -n "$TRAVIS_TAG" ]]; then
+      work_dir=$(pwd)
+      cd $HOME
+      curl -LSfs -O \
+        https://github.com/goreleaser/goreleaser/releases/download/v0.83.3/goreleaser_Linux_x86_64.tar.gz
+      tar xf goreleaser_Linux_x86_64.tar.gz
+      cd $work_dir
+      $HOME/goreleaser
+    fi
+
+env:
+  global:
+    secure: LF5o6umdNZq12hcqhlsmDndV5ecqvYkfgkUCO5Q+Kpl9YBIZBgYxXikY7Xx2uhK3xHuL47Uom5MbZz5NST2ExUDTMbFJ6PP8cxE5CFtXxdo/f6ZYaX3n2JAPjZwK+5CVZJ1d8ufpCnvrOMGFKSfXApB6Bla0dxRGTbLuxCF01W7HZQB9H1rzm67XDmerc1Zzg/p0hK4M2CSVweXEGQbACOvgvzvOHBcGw53w3yMh5K5OZpxW8PVVeHpVXmMzsabTprQS5F75fLfOjmRIgo1YdQbg59vrwZR4MgA9BOzGC7Wd3j4VzhYvIdzDknbUFyWPi93OMfVTIfrk/OFRCqyUmUlxJSg5H7yuOQP2s7xBGFjNhlL3huQmtvQ3EaCKnexgkYXegL1bJ5e9m75OXIoaBokw3dr2+FOdSgNUGvm/5cwBO/2Ex9oFhjQFlf4oJf61QYAWLVSjoKhHI6QsjezcBbc3MqTrvFcgbu/ONXz8HsrXtJeIGfWnaSzbrvPcZaOdYyyMDGfYOmtFSZNh82mmTBKetfrt/Tec7lFsNncZWGbthkeRTjIphFPRHdXRA5Db3nHXqWJt0ldnAocDRhuNmfgKlrHbKwqRj+ztzPpvewhlDaH212m5jjbFN8tdPcHGeI7RpjuasHodgdlS2QUtX5RQiWMAs86Dcx4wncKml/8=

@@ -101,11 +101,7 @@ func (c *editCommand) update(plainText []byte) error {
 		return err
 	}
 
-	if err := os.Rename(tmpFile.Name(), c.filename); err != nil {
-		return err
-	}
-
-	return nil
+	return os.Rename(tmpFile.Name(), c.filename)
 }
 
 func (c *editCommand) editText(text []byte) ([]byte, error) {

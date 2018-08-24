@@ -12,7 +12,8 @@ import (
 
 type editCommand struct {
 	*command
-	editor string
+	editor    string
+	validator *validator
 }
 
 func editCommandFromContext(c *cli.Context) (*editCommand, error) {
@@ -26,7 +27,12 @@ func editCommandFromContext(c *cli.Context) (*editCommand, error) {
 		return nil, fmt.Errorf("editor is required")
 	}
 
-	return &editCommand{cmd, editor}, nil
+	validator, err := newValidator()
+	if err != nil {
+		return nil, err
+	}
+
+	return &editCommand{cmd, editor, validator}, nil
 }
 
 func (c *editCommand) run() error {
@@ -42,6 +48,10 @@ func (c *editCommand) run() error {
 
 	updatedPlainText, err := c.editText(plainText)
 	if err != nil {
+		return err
+	}
+
+	if err := c.validator.validate(updatedPlainText); err != nil {
 		return err
 	}
 

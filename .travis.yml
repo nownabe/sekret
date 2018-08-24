@@ -6,7 +6,8 @@ go:
 script:
   - |
     if [[ -z "$TRAVIS_TAG" ]]; then
-      go test -race -cover -vet -all ./...
+      go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      bash <(curl -s https://codecov.io/bash)
     fi
 
   - |

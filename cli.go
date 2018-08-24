@@ -8,7 +8,7 @@ import (
 
 const (
 	cliName = "sekret"
-	cliDesc = "Encrypt/Decrypt Kubernetes Secrets"
+	cliDesc = "Work with encrypted Kubernetes Secrets"
 
 	decodeBase64Flagname = "decode-base64"
 	editorFlagName       = "editor"

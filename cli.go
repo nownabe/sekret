@@ -24,7 +24,7 @@ func newCLI() *cli.App {
 
 	keyFlag := cli.StringFlag{
 		Name:   keyFlagName,
-		Usage:  "Encryption key",
+		Usage:  "Encryption key (16 or 32 bytes)",
 		EnvVar: "ENCRYPTION_KEY",
 	}
 

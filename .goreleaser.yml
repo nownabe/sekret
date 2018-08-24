@@ -1,5 +1,5 @@
 builds:
-  - binary: cryptography
+  - binary: sekret
     goos:
       - windows
       - darwin

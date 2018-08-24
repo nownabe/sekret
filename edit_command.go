@@ -12,6 +12,7 @@ import (
 
 type editCommand struct {
 	*command
+	decode    bool
 	editor    string
 	validator *validator
 }
@@ -32,7 +33,12 @@ func editCommandFromContext(c *cli.Context) (*editCommand, error) {
 		return nil, err
 	}
 
-	return &editCommand{cmd, editor, validator}, nil
+	return &editCommand{
+		cmd,
+		c.Bool(decodeBase64Flagname),
+		editor,
+		validator,
+	}, nil
 }
 
 func (c *editCommand) run() error {
@@ -46,9 +52,25 @@ func (c *editCommand) run() error {
 		return err
 	}
 
+	if c.decode {
+		decoded, err := decode(plainText)
+		if err != nil {
+			return err
+		}
+		plainText = decoded
+	}
+
 	updatedPlainText, err := c.editText(plainText)
 	if err != nil {
 		return err
+	}
+
+	if c.decode {
+		encoded, err := encode(updatedPlainText)
+		if err != nil {
+			return err
+		}
+		updatedPlainText = encoded
 	}
 
 	if err := c.validator.validate(updatedPlainText); err != nil {

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+version=$1
+
+git checkout master
+git pull --prune
+
+cat <<CODE > version.go
+package main
+
+const cliVer = "$version"
+CODE
+
+git add version.go
+git commit -m "Release v$version"
+git push
+
+git tag -a v$version -m v$version
+git push --tags

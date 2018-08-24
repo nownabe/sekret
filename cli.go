@@ -9,7 +9,7 @@ import (
 const (
 	cliName = "sekret"
 	cliDesc = "Encrypt/Decrypt Kubernetes Secrets"
-	cliVer  = "0.1.0"
+	cliVer  = "1.0.0"
 
 	decodeBase64Flagname = "decode-base64"
 	editorFlagName       = "editor"

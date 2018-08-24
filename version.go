@@ -1,3 +1,3 @@
 package main
 
-const cliVer = "1.0.0"
+const cliVer = "1.0.1"

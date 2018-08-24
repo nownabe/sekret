@@ -9,7 +9,7 @@ func main() {
 	cli := newCLI()
 	err := cli.Run(os.Args)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }

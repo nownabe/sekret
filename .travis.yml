@@ -5,7 +5,9 @@ go:
 
 script:
   - |
-    [[ -z "$TRAVIS_TAG" ]] && go test -race -cover -vet -all ./...
+    if [[ -z "$TRAVIS_TAG" ]]; then
+      go test -race -cover -vet -all ./...
+    fi
 
   - |
     set -x
@@ -16,7 +18,7 @@ script:
         https://github.com/goreleaser/goreleaser/releases/download/v0.83.3/goreleaser_Linux_x86_64.tar.gz
       tar xf goreleaser_Linux_x86_64.tar.gz
       cd $work_dir
-      goreleaser
+      $HOME/goreleaser
     fi
 
 env:

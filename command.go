@@ -21,11 +21,6 @@ func commandFromContext(c *cli.Context) (*command, error) {
 		return nil, fmt.Errorf("file is required")
 	}
 
-	filename := c.Args()[0]
-	if !exists(filename) {
-		return nil, fmt.Errorf("%s does not exist", filename)
-	}
-
 	cr, err := newCrypto(key)
 	if err != nil {
 		return nil, err
@@ -33,7 +28,7 @@ func commandFromContext(c *cli.Context) (*command, error) {
 
 	return &command{
 		crypto:   cr,
-		filename: filename,
+		filename: c.Args()[0],
 	}, nil
 }
 

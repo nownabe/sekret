@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -15,6 +16,10 @@ func decryptCommandFromContext(c *cli.Context) (*decryptCommand, error) {
 	cmd, err := commandFromContext(c)
 	if err != nil {
 		return nil, err
+	}
+
+	if !exists(cmd.filename) {
+		return nil, fmt.Errorf("%s does not exist", cmd.filename)
 	}
 
 	return &decryptCommand{cmd}, nil

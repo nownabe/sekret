@@ -23,6 +23,10 @@ func editCommandFromContext(c *cli.Context) (*editCommand, error) {
 		return nil, err
 	}
 
+	if !exists(cmd.filename) {
+		return nil, fmt.Errorf("%s does not exist", cmd.filename)
+	}
+
 	editor := c.String(editorFlagName)
 	if editor == "" {
 		return nil, fmt.Errorf("editor is required")
@@ -35,7 +39,7 @@ func editCommandFromContext(c *cli.Context) (*editCommand, error) {
 
 	return &editCommand{
 		cmd,
-		c.Bool(decodeBase64Flagname),
+		c.Bool(decodeBase64FlagName),
 		editor,
 		validator,
 	}, nil

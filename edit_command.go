@@ -3,46 +3,25 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"os/exec"
-	"path"
 
 	"github.com/urfave/cli"
 )
 
 type editCommand struct {
-	*command
-	decode    bool
-	editor    string
-	validator *validator
+	*editorCommand
 }
 
 func editCommandFromContext(c *cli.Context) (*editCommand, error) {
-	cmd, err := commandFromContext(c)
+	ecmd, err := editorCommandFromContext(c)
 	if err != nil {
 		return nil, err
 	}
 
-	if !exists(cmd.filename) {
-		return nil, fmt.Errorf("%s does not exist", cmd.filename)
+	if !exists(ecmd.filename) {
+		return nil, fmt.Errorf("%s does not exist", ecmd.filename)
 	}
 
-	editor := c.String(editorFlagName)
-	if editor == "" {
-		return nil, fmt.Errorf("editor is required")
-	}
-
-	validator, err := newValidator()
-	if err != nil {
-		return nil, err
-	}
-
-	return &editCommand{
-		cmd,
-		c.Bool(decodeBase64FlagName),
-		editor,
-		validator,
-	}, nil
+	return &editCommand{ecmd}, nil
 }
 
 func (c *editCommand) run() error {
@@ -82,58 +61,4 @@ func (c *editCommand) run() error {
 	}
 
 	return c.update(updatedPlainText)
-}
-
-func (c *editCommand) update(plainText []byte) error {
-	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
-	if err != nil {
-		return err
-	}
-	defer removeTempFile(tmpFile.Name())
-
-	cipherText, err := c.crypto.encrypt(plainText)
-	if err != nil {
-		return err
-	}
-
-	fi, err := os.Stat(c.filename)
-	if err != nil {
-		return err
-	}
-
-	if err := ioutil.WriteFile(tmpFile.Name(), cipherText, fi.Mode()); err != nil {
-		return err
-	}
-
-	return os.Rename(tmpFile.Name(), c.filename)
-}
-
-func (c *editCommand) editText(text []byte) ([]byte, error) {
-	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
-	if err != nil {
-		return nil, err
-	}
-	defer removeTempFile(tmpFile.Name())
-
-	if _, err := tmpFile.Write(text); err != nil {
-		return nil, err
-	}
-
-	cmd := exec.Command(c.editor, tmpFile.Name())
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-
-	if err := cmd.Run(); err != nil {
-		return nil, err
-	}
-
-	return ioutil.ReadFile(tmpFile.Name())
-}
-
-func removeTempFile(path string) {
-	if exists(path) {
-		if err := os.Remove(path); err != nil {
-			panic(err)
-		}
-	}
 }

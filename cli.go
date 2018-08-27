@@ -54,6 +54,17 @@ func newCLI() *cli.App {
 			Action: editAction,
 		},
 		{
+			Name:      "new",
+			Usage:     "Create new encrypted secret YAML",
+			ArgsUsage: "file",
+			Flags: []cli.Flag{
+				keyFlag,
+				decodeBase64Flag,
+				editorFlag,
+			},
+			Action: newAction,
+		},
+		{
 			Name:      "encrypt",
 			ShortName: "enc",
 			Usage:     "Encrypt file",
@@ -76,6 +87,14 @@ func newCLI() *cli.App {
 
 func editAction(c *cli.Context) error {
 	cmd, err := editCommandFromContext(c)
+	if err != nil {
+		return err
+	}
+	return cmd.run()
+}
+
+func newAction(c *cli.Context) error {
+	cmd, err := newCommandFromContext(c)
 	if err != nil {
 		return err
 	}

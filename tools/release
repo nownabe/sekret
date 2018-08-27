@@ -2,6 +2,8 @@
 
 version=$1
 
+[[ -z "$version" ]] && echo "You must specify version number" && exit 1
+
 git checkout master
 git pull --prune
 

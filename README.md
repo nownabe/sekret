@@ -9,6 +9,8 @@ Sekret
 
 Sekret is a tool to edit encrypted Kubernetes Secrets YAML as plain text.
 
+[![asciicast](https://asciinema.org/a/MyvxqcN0oMbmGc8xAaJh4U2Fz.png)](https://asciinema.org/a/MyvxqcN0oMbmGc8xAaJh4U2Fz)
+
 # Installation
 
 ```bash
@@ -31,7 +33,8 @@ VERSION:
    1.0.1
 
 COMMANDS:
-     edit          Edit secrets as plain text
+     edit          Edit secret YAML as plain text
+     new           Create new encrypted secret YAML and edit it
      encrypt, enc  Encrypt file
      decrypt, dec  Decrypt encrypted file
      help, h       Shows a list of commands or help for one command
@@ -43,6 +46,27 @@ GLOBAL OPTIONS:
 ```
 
 ## Examples
+
+### Create and Edit
+
+Create a new Secret YAML file.
+
+```bash
+$ export EDITOR=vim
+$ export ENCRYPTION_KEY=$YOUR_ENCRYPTION_KEY
+$ secret new new-secret.yaml
+$ ls
+new-secret.yaml
+$ file new-secret.yaml
+new-secret.yaml: data
+$ secret edit new-secret.yaml
+```
+
+`new` and `edit` commands do:
+
+* open Secret YAML in specified editor
+* decode/encode base64 data
+* validate edited YAML
 
 ### Encrypt and Decrypt
 

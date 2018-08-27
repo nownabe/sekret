@@ -44,7 +44,7 @@ func newCLI() *cli.App {
 	app.Commands = []cli.Command{
 		{
 			Name:      "edit",
-			Usage:     "Edit secrets as plain text",
+			Usage:     "Edit secret YAML as plain text",
 			ArgsUsage: "file",
 			Flags: []cli.Flag{
 				keyFlag,
@@ -55,7 +55,7 @@ func newCLI() *cli.App {
 		},
 		{
 			Name:      "new",
-			Usage:     "Create new encrypted secret YAML",
+			Usage:     "Create new encrypted secret YAML and edit it",
 			ArgsUsage: "file",
 			Flags: []cli.Flag{
 				keyFlag,

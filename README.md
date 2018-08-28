@@ -30,11 +30,12 @@ USAGE:
    sekret [global options] command [command options] [arguments...]
 
 VERSION:
-   1.0.1
+   1.1.0
 
 COMMANDS:
      edit          Edit secret YAML as plain text
      new           Create new encrypted secret YAML and edit it
+     show          Show decrypted secret YAML
      encrypt, enc  Encrypt file
      decrypt, dec  Decrypt encrypted file
      help, h       Shows a list of commands or help for one command
@@ -43,6 +44,7 @@ GLOBAL OPTIONS:
    --key value    Encryption key (16 or 32 bytes) [$ENCRYPTION_KEY]
    --help, -h     show help
    --version, -v  print the version
+
 ```
 
 ## Examples

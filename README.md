@@ -17,7 +17,7 @@ Sekret is a tool to edit encrypted Kubernetes Secrets YAML as plain text.
 go get github.com/nownabe/sekret
 ```
 
-Or download binary from [GitHub releases](https://github.com/nownabe/sekret/releases)
+Or download binaries from [GitHub releases](https://github.com/nownabe/sekret/releases)
 
 # Usage
 

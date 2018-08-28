@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 
@@ -46,6 +47,10 @@ func (c *editCommand) run() error {
 	updatedPlainText, err := c.editText(plainText)
 	if err != nil {
 		return err
+	}
+
+	if bytes.Equal(plainText, updatedPlainText) {
+		return nil
 	}
 
 	if c.decode {

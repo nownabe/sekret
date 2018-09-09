@@ -35,7 +35,10 @@ func (c *encryptCommand) run(in io.Reader, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	out.Write(cipherText)
+
+	if _, err := out.Write(cipherText); err != nil {
+		return err
+	}
 
 	return nil
 }

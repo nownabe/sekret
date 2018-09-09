@@ -35,7 +35,10 @@ func (c *decryptCommand) run(in io.Reader, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	out.Write(plainText)
+
+	if _, err := out.Write(plainText); err != nil {
+		return err
+	}
 
 	return nil
 }

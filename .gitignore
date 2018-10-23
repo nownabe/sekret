@@ -1,3 +1,4 @@
 sekret
 /*.yaml
 /*.enc
+.envrc

@@ -41,31 +41,20 @@ func editorCommandFromContext(c *cli.Context) (*editorCommand, error) {
 }
 
 func (c *editorCommand) create(plainText []byte) error {
-	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
-	if err != nil {
-		return err
-	}
-	defer removeTempFile(tmpFile.Name())
-
 	cipherText, err := c.crypto.encrypt(plainText)
 	if err != nil {
 		return err
 	}
 
-	if err := ioutil.WriteFile(tmpFile.Name(), cipherText, 0644); err != nil {
-		return err
+	// re-check before save
+	if exists(c.filename) {
+		return fmt.Errorf("%s already exists", c.filename)
 	}
 
-	return os.Rename(tmpFile.Name(), c.filename)
+	return ioutil.WriteFile(c.filename, cipherText, 0644)
 }
 
 func (c *editorCommand) update(plainText []byte) error {
-	tmpFile, err := ioutil.TempFile("", path.Base(c.filename))
-	if err != nil {
-		return err
-	}
-	defer removeTempFile(tmpFile.Name())
-
 	cipherText, err := c.crypto.encrypt(plainText)
 	if err != nil {
 		return err
@@ -76,11 +65,7 @@ func (c *editorCommand) update(plainText []byte) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile(tmpFile.Name(), cipherText, fi.Mode()); err != nil {
-		return err
-	}
-
-	return os.Rename(tmpFile.Name(), c.filename)
+	return ioutil.WriteFile(c.filename, cipherText, fi.Mode())
 }
 
 func (c *editorCommand) editText(text []byte) ([]byte, error) {

@@ -57,12 +57,12 @@ Create a new Secret YAML file.
 ```bash
 $ export EDITOR=vim
 $ export ENCRYPTION_KEY=$YOUR_ENCRYPTION_KEY
-$ secret new new-secret.yaml
+$ sekret new new-secret.yaml
 $ ls
 new-secret.yaml
 $ file new-secret.yaml
 new-secret.yaml: data
-$ secret edit new-secret.yaml
+$ sekret edit new-secret.yaml
 ```
 
 `new` and `edit` commands do:
